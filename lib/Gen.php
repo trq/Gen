@@ -69,27 +69,26 @@ class Gen {
 
         require dirname(__FILE__) . '/../vendor/autoload.php';
 
-        $loader = new Twig_Loader_Filesystem([$src . '/templates', $src . '/content']);
-        $twig = new Twig_Environment($loader);
+        if (!is_dir($destination)) {
+            if ($this->verbose) {
+                echo "Creating: $destination\n";
+            }
+            mkdir($destination);
+        }
+
+        $this->cp($src . '/assets', $destination . '/assets');
 
         foreach ($this->scan($src . '/content') as $entry) {
+            $loader = new Twig_Loader_Filesystem([$src . '/templates', $src . '/content', $entry['path']]);
+            $twig = new Twig_Environment($loader);
             $template = $twig->loadTemplate($entry['file']);
 
             $path = str_replace($src . '/content', $destination, $entry['path']);
             $file = $this->replaceExtension($entry['file'], 'html');
 
-            if (!is_dir($destination)) {
-                if ($this->verbose) {
-                    echo "Creating: $destination\n";
-                }
-                mkdir($destination);
-            }
-
             if (!is_dir($path)) {
                 mkdir($path, 0777, true);
             }
-
-            $this->cp($src . '/assets', $destination . '/assets');
 
             if ($this->verbose) {
                 echo "Creating: $path/$file\n";
