@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+
+require dirname(__FILE__) . '/../lib/Gen.php';
+
+$opt            = getopt("hvs:d:");
+$src            = isset($opt['s']) ? $opt['s'] : false;
+$destination    = isset($opt['d']) ? $opt['d'] : false;
+$verbose        = isset($opt['v']) ? true : false;
+$help           = isset($opt['h']) ? true : false;
+
+if ($help || !$src || !$destination) {
+    echo "
+Usage {$argv[0]} <options>\n
+
+Required Options:
+    -s <source>
+    -d <destination>
+
+Optional Options:
+    -v verbose output
+    -h this help\n";
+} else {
+    $gen = new Gen($verbose);
+    $gen->build($src, $destination);
+}
