@@ -15,19 +15,19 @@ class Gen {
             @mkdir($destination);
             $directory = dir( $source );
             while (false !== ($readdirectory = $directory->read())) {
-                if ( $readdirectory == '.' || $readdirectory == '..' ) {
+                if ($readdirectory == '.' || $readdirectory == '..') {
                     continue;
                 }
                 $pathDir = $source . '/' . $readdirectory;
                 if (is_dir($pathDir)) {
-                    $this->cp( $pathDir, $destination . '/' . $readdirectory);
+                    $this->cp($pathDir, $destination . '/' . $readdirectory);
                     continue;
                 }
 
                 if ($this->verbose) {
                     echo "Copying: $pathDir => $destination/$readdirectory\n";
                 }
-                copy($pathDir, $destination . '' . $readdirectory);
+                copy($pathDir, $destination . '/' . $readdirectory);
             }
             $directory->close();
 
