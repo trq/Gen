@@ -48,7 +48,7 @@ class Gen {
             foreach($lists as $file) {
 
                 if (is_dir($path . '/' . $file) && $file != '.' & $file != '..') {
-                    //$this->scan($path . '/' . $file, $name);
+                    $this->scan($path . '/' . $file, $name);
                 } else {
                     if ($file != '..' && $file != '.') {
                         $name[] = ['path' => $path, 'file' => $file];
