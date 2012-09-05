@@ -39,7 +39,7 @@ class Gen {
         }
     }
 
-    public function scan($path = '', &$name = array() )
+    public function scan($path = '', &$name = array())
     {
         $path = $path == '' ? dirname(__FILE__) : $path;
         $lists = scandir($path);
@@ -79,22 +79,32 @@ class Gen {
         $this->cp($src . '/assets', $destination . '/assets');
 
         foreach ($this->scan($src . '/content') as $entry) {
-            $loader = new Twig_Loader_Filesystem([$src . '/templates', $src . '/content', $entry['path']]);
-            $twig = new Twig_Environment($loader);
-            $template = $twig->loadTemplate($entry['file']);
+            if (pathinfo($entry['file'], PATHINFO_EXTENSION) == 'twig') {
+                $loader = new Twig_Loader_Filesystem([$src . '/templates', $entry['path']]);
+                $twig = new Twig_Environment($loader);
+                $template = $twig->loadTemplate($entry['file']);
 
-            $path = str_replace($src . '/content', $destination, $entry['path']);
-            $file = $this->replaceExtension($entry['file'], 'html');
+                $path = str_replace($src . '/content', $destination, $entry['path']);
+                $file = $this->replaceExtension($entry['file'], 'html');
 
-            if (!is_dir($path)) {
-                mkdir($path, 0777, true);
+                $phpFile = $entry['path'] . '/' . $this->replaceExtension($entry['file'], 'php');
+
+                if (file_exists($phpFile)) {
+                    $data = (array) include $phpFile;
+                } else {
+                    $data = [];
+                }
+
+                if (!is_dir($path)) {
+                    mkdir($path, 0777, true);
+                }
+
+                if ($this->verbose) {
+                    echo "Creating: $path/$file\n";
+                }
+
+                file_put_contents($path . '/' . $file, $template->render($data));
             }
-
-            if ($this->verbose) {
-                echo "Creating: $path/$file\n";
-            }
-
-            file_put_contents($path . '/' . $file, $template->render([]));
         }
 
     }
