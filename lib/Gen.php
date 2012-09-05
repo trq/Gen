@@ -67,6 +67,14 @@ class Gen {
 
     public function build($src, $destination) {
 
+        $data = [];
+
+        if (file_exists($src . '/global.php')) {
+            $data = (array) include $src . '/global.php';
+        } else {
+            $data = [];
+        }
+
         require dirname(__FILE__) . '/../vendor/autoload.php';
 
         if (!is_dir($destination)) {
@@ -90,9 +98,7 @@ class Gen {
                 $phpFile = $entry['path'] . '/' . $this->replaceExtension($entry['file'], 'php');
 
                 if (file_exists($phpFile)) {
-                    $data = (array) include $phpFile;
-                } else {
-                    $data = [];
+                    $data = array_merge($data, (array) include $phpFile);
                 }
 
                 if (!is_dir($path)) {
