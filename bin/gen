@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-require dirname(__FILE__) . '/../lib/Gen.php';
+require realpath(__DIR__) . '/../../autoloader.php';
 
 $opt            = getopt("hvs:d:");
 $src            = isset($opt['s']) ? $opt['s'] : false;
@@ -21,6 +21,6 @@ Optional Options:
     -v verbose output
     -h this help\n";
 } else {
-    $gen = new Gen($verbose);
+    $gen = new Gen\Gen($verbose);
     $gen->build($src, $destination);
 }

@@ -1,5 +1,7 @@
 <?php
 
+namespace Gen;
+
 class Gen {
 
     protected $verbose;
@@ -75,7 +77,7 @@ class Gen {
             $data = [];
         }
 
-        require dirname(__FILE__) . '/../vendor/autoload.php';
+        require realpath(__DIR__) . '/../../../autoload.php';
 
         if (!is_dir($destination)) {
             if ($this->verbose) {
