@@ -95,6 +95,12 @@ class Gen {
                 $path = str_replace($src . '/content', $destination, $entry['path']);
                 $file = $this->replaceExtension($entry['file'], 'html');
 
+                $local = $entry['path'] . '/local.php';
+
+                if (file_exists($local)) {
+                    $data = array_merge($data, (array) include $local);
+                }
+
                 $phpFile = $entry['path'] . '/' . $this->replaceExtension($entry['file'], 'php');
 
                 if (file_exists($phpFile)) {
