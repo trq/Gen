@@ -1,5 +1,16 @@
 {
-    "require": {
-        "twig/twig": "1.*"
+  "name": "trq/Gen",
+  "description": "A very very simple static site generator using Twig",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tony R Quilkey",
+      "email": "trq@proemframework.org",
+      "homepage": "http://thorpesystems.com"
     }
+  ],
+  "require": {
+    "twig/twig": "1.*"
+  }
 }
