@@ -14,7 +14,7 @@
     "twig/twig": "1.*"
   },
   "autoload": {
-    "psr-0": { "Gen": "lib/" }
+    "psr-0": { "Gen": ["lib/"] }
   },
-  "bin": "bin/gen"
+  "bin": ["bin/gen"]
 }
