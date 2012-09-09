@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-require realpath(__DIR__) . '/../../../autoloader.php';
+require dirname(__FILE__) . '/../lib/Gen.php';
 
 $opt            = getopt("hvs:d:");
 $src            = isset($opt['s']) ? $opt['s'] : false;
