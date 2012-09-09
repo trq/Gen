@@ -1,5 +1,5 @@
 {
-  "name": "trq/Gen",
+  "name": "trq/gen",
   "description": "A very very simple static site generator using Twig",
   "type": "library",
   "license": "MIT",
