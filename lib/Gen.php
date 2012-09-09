@@ -92,8 +92,8 @@ class Gen {
 
         foreach ($this->scan($src . '/content') as $entry) {
             if (pathinfo($entry['file'], PATHINFO_EXTENSION) == 'twig') {
-                $loader = new Twig_Loader_Filesystem([$src . '/templates', $entry['path']]);
-                $twig = new Twig_Environment($loader);
+                $loader = new \Twig_Loader_Filesystem([$src . '/templates', $entry['path']]);
+                $twig = new \Twig_Environment($loader);
                 $template = $twig->loadTemplate($entry['file']);
 
                 $path = str_replace($src . '/content', $destination, $entry['path']);
