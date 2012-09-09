@@ -84,7 +84,9 @@ class Gen {
             mkdir($destination);
         }
 
-        $this->cp($src . '/assets', $destination . '/assets');
+        if (is_dir($src . '/assets')) {
+            $this->cp($src . '/assets', $destination . '/assets');
+        }
 
         foreach ($this->scan($src . '/content') as $entry) {
             if (pathinfo($entry['file'], PATHINFO_EXTENSION) == 'twig') {
