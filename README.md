@@ -59,3 +59,5 @@ will result in:
 ```
 
 You can also inject variabes into your content by using php pages. Gen searches for a global.php file within the root of your source directory, a local.php file within the content directory or any of it's sub directories. Gen will finally search for a php file named the same as your twig file.Any of these php files can return an array of data which will then be made available within your templates.
+
+If you need to add extensions to twig, you can do so by defining a extension_loader.php file within the root of your source directory. This file gets access to the Twig_Environment object in a variable named $twig.

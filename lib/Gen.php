@@ -94,6 +94,11 @@ class Gen {
             if (pathinfo($entry['file'], PATHINFO_EXTENSION) == 'twig') {
                 $loader = new \Twig_Loader_Filesystem([$src . '/templates', $entry['path']]);
                 $twig = new \Twig_Environment($loader);
+
+                if (file_exists($src . '/extension_loader.php')) {
+                    include $src . '/extension_loader.php';
+                }
+
                 $template = $twig->loadTemplate($entry['file']);
 
                 $path = str_replace($src . '/content', $destination, $entry['path']);
