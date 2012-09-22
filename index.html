@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Gen by trq</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Gen</h1>
+        <h2>A *very* simple static site generator using Twig.</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/trq/Gen/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/trq/Gen/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/trq/Gen" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>Gen</h1>
+
+<p>A <em>very</em> <em>very</em> simple static site generator using Twig.</p>
+
+<p>I developed this <em>very</em> <em>very</em> simple static site generator specifically for generating the <a href="http://proemframework.org">http://proemframework.org</a> web site. It is indeed, <em>very</em> <em>very</em> simple.</p>
+
+<p>It expects to find the following structure within the source directory:</p>
+
+<pre><code>├── assets
+├── content
+└── templates
+</code></pre>
+
+<p>The <em>assets</em> directory is optional, but if found, it's contents will be copied into the destination directory.</p>
+
+<p>The <em>templates</em> directory should contain your reusable template partials, while, the <em>content</em> directory contains your site structure and actual pages.</p>
+
+<p>The contents of the <em>content</em> directory will be processed and the directories and pages within will be copied into your destination.</p>
+
+<p>eg;</p>
+
+<pre><code>├── assets
+│   ├── css
+│   │   ├── bootstrap-responsive.css
+│   ├── js
+│   │   ├── bootstrap.min.js
+│   └── media
+│       └── img
+│           ├── banner-bg.png
+├── content
+│   ├── about.twig
+│   ├── docs
+│   │   ├── current
+│   │   │   ├── index.twig
+│   └── index.twig
+└── templates
+    ├── layout.twig
+</code></pre>
+
+<p>will result in:</p>
+
+<pre><code>├── about.html
+├── assets
+│   ├── css
+│   │   ├── bootstrap-responsive.css
+│   ├── js
+│   │   ├── bootstrap.min.js
+│   └── media
+│       └── img
+│           ├── banner-bg.png
+├── docs
+│   ├── current
+│   │   ├── index.html
+└── index.html
+</code></pre>
+
+<p>You can also inject variabes into your content by using php pages. Gen searches for a global.php file within the root of your source directory, a local.php file within the content directory or any of it's sub directories. Gen will finally search for a php file named the same as your twig file.Any of these php files can return an array of data which will then be made available within your templates.</p>
+
+<p>If you need to add extensions to twig, you can do so by defining a extension_loader.php file within the root of your source directory. This file gets access to the Twig_Environment object in a variable named $twig.</p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
