@@ -77,7 +77,13 @@ class Gen {
             $data = [];
         }
 
-        require realpath(__DIR__) . '/../../../autoload.php';
+        if (file_exists(realpath(__DIR__) . '/../../../autoload.php')) {
+            require_once realpath(__DIR__) . '/../../../autoload.php';
+        } else if (file_exists(realpath(__DIR__) . '/../vendor/autoload.php')) {
+            require_once realpath(__DIR__) . '/../vendor/autoload.php';
+        } else {
+            throw new \RuntimeException('composer autoloader not found - unabled to load dependencies.');
+        }
 
         if (!is_dir($destination)) {
             if ($this->verbose) {
@@ -95,8 +101,13 @@ class Gen {
                 $loader = new \Twig_Loader_Filesystem([$src . '/templates', $entry['path']]);
                 $twig = new \Twig_Environment($loader);
 
-                if (file_exists($src . '/extension_loader.php')) {
-                    include $src . '/extension_loader.php';
+                if (is_dir($src . '/extensions')) {
+                    require_once 'TwigExtension.php';
+                    foreach (glob($src . '/extensions/*.php') as $file) {
+                        require_once $file;
+                        $extension = 'Gen\\' . basename($file, '.php');
+                        $twig->addExtension(new $extension($entry['path'], $entry['file']));
+                    }
                 }
 
                 $template = $twig->loadTemplate($entry['file']);
