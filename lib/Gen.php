@@ -11,6 +11,13 @@ class Gen {
         $this->verbose = $verbose;
     }
 
+    protected function log($msg)
+    {
+        if ($this->verbose) {
+            echo "$msg\n";
+        }
+    }
+
     public function cp( $source, $destination )
     {
         if (is_dir($source)) {
@@ -26,17 +33,13 @@ class Gen {
                     continue;
                 }
 
-                if ($this->verbose) {
-                    echo "Copying: $pathDir => $destination/$readdirectory\n";
-                }
+                $this->log("Copying: $pathDir => $destination/$readdirectory");
                 copy($pathDir, $destination . '/' . $readdirectory);
             }
             $directory->close();
 
         } else {
-            if ($this->verbose) {
-                echo "Copying: $source => $destination\n";
-            }
+            $this->log("Copying: $source => $destination");
             copy($source, $destination);
         }
     }
@@ -67,12 +70,31 @@ class Gen {
         return preg_replace('/\..+$/', '.' . $extension, $filename);
     }
 
-    public function build($src, $destination) {
+    public function build($src, $dest = null) {
 
         $data = [];
 
-        if (file_exists($src . '/global.php')) {
-            $data = (array) include $src . '/global.php';
+        if ($dest === null) {
+            $dest = $src . '/build';
+        }
+
+        $ops = [
+            'extensions'    => 'extensions',
+            'content'       => 'content',
+            'templates'     => 'templates',
+            'assets'        => ['assets'],
+            'global'        => 'global.php',
+            'local'         => 'local.php',
+            'src'           => $src,
+            'dest'          => $dest
+        ];
+
+        if (file_exists($ops['src'] . '/gen.conf.php')) {
+            $ops = array_merge((array) include $opt['src'] . '/gen.conf.php', $ops);
+        }
+
+        if (file_exists($ops['src'] . '/' . $ops['global'])) {
+            $data = (array) include $ops['src'] . '/' . $ops['global'];
         } else {
             $data = [];
         }
@@ -85,37 +107,21 @@ class Gen {
             throw new \RuntimeException('composer autoloader not found - unabled to load dependencies.');
         }
 
-        if (!is_dir($destination)) {
-            if ($this->verbose) {
-                echo "Creating: $destination\n";
+        if (!is_dir($ops['dest'])) {
+            $this->log("Creating: {$ops['dest']}");
+            mkdir($ops['dest']);
+        }
+
+        foreach ($ops['assets'] as $assetDir) {
+            if (is_dir($ops['src'] . '/' . $assetDir)) {
+                $this->cp($ops['src'] . '/' . $assetDir, $ops['dest'] . '/' . $assetDir);
             }
-            mkdir($destination);
         }
 
-        if (is_dir($src . '/assets')) {
-            $this->cp($src . '/assets', $destination . '/assets');
-        }
-
-        foreach ($this->scan($src . '/content') as $entry) {
+        foreach ($this->scan($ops['src'] . '/' . $ops['content']) as $entry) {
             if (pathinfo($entry['file'], PATHINFO_EXTENSION) == 'twig') {
-                $loader = new \Twig_Loader_Filesystem([$src . '/templates', $entry['path']]);
-                $twig = new \Twig_Environment($loader);
 
-                if (is_dir($src . '/extensions')) {
-                    require_once 'TwigExtension.php';
-                    foreach (glob($src . '/extensions/*.php') as $file) {
-                        require_once $file;
-                        $extension = 'Gen\\' . basename($file, '.php');
-                        $twig->addExtension(new $extension($entry['path'], $entry['file']));
-                    }
-                }
-
-                $template = $twig->loadTemplate($entry['file']);
-
-                $path = str_replace($src . '/content', $destination, $entry['path']);
-                $file = $this->replaceExtension($entry['file'], 'html');
-
-                $local = $entry['path'] . '/local.php';
+                $local = $entry['path'] . '/' . $ops['local'];
 
                 if (file_exists($local)) {
                     $data = array_merge($data, (array) include $local);
@@ -127,13 +133,28 @@ class Gen {
                     $data = array_merge($data, (array) include $phpFile);
                 }
 
+                $loader = new \Twig_Loader_Filesystem([$ops['src'] . '/' . $ops['templates'], $entry['path']]);
+                $twig = new \Twig_Environment($loader);
+
+                if (is_dir($ops['src'] . '/' . $ops['extensions'])) {
+                    require_once 'TwigExtension.php';
+                    foreach (glob($ops['src'] . '/' . $ops['extensions'] . '/*.php') as $file) {
+                        require_once $file;
+                        $extension = 'Gen\\' . basename($file, '.php');
+                        $twig->addExtension(new $extension($entry['path'], $entry['file'], $ops, $data));
+                    }
+                }
+
+                $template = $twig->loadTemplate($entry['file']);
+
+                $path = str_replace($ops['src'] . '/' . $ops['content'], $ops['dest'], $entry['path']);
+                $file = $this->replaceExtension($entry['file'], 'html');
+
                 if (!is_dir($path)) {
                     mkdir($path, 0777, true);
                 }
 
-                if ($this->verbose) {
-                    echo "Creating: $path/$file\n";
-                }
+                $this->log("Creating: $path/$file");
 
                 file_put_contents($path . '/' . $file, $template->render($data));
             }
