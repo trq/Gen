@@ -1,5 +1,5 @@
 Gen
-===
+=====
 A *very* *very* simple static site generator using the Twig template engine.
 
 I developed this *very* *very* simple static site generator specifically for generating the http://proemframework.org web site. It is indeed, *very* *very* simple.
@@ -13,7 +13,7 @@ By default Gen expects to find the following structure within the source directo
 └── templates       - Contains reusable .twig template partials.
 ```
 An Example
-=====
+===
 ```
 ├── assets
 │   ├── css
@@ -50,7 +50,7 @@ __Results in__:
 └── index.html
 ```
 Injecting Data
-=====
+===
 Data (variables, arrays, objects) can be injected into templates at certain levels.
 
 Data is injected by simply creating a .php file that returns the data you want in an array.
@@ -66,15 +66,15 @@ Secondly, you can create a *local.php* file within any sub directory. The data t
 Lastly, you can create a .php file with the same name as your .twig file. The data returned by this file will again be merged into the data provided above, and the results will be made available only within the .twig file of the same name.
 
 Twig Extensions
-=====
+===
 To use a custom Twig extension simply create a class extending the [Gen\TwigExtension](https://github.com/trq/Gen/blob/master/lib/TwigExtension.php) within the *Gen* namespace and drop it's file into the *extensions* directory and extend the Gen\TwigExtension class.
 
-By extending the [Gen\TwigExtension](https://github.com/trq/Gen/blob/master/lib/TwigExtension.php)
+By extending the [Gen\TwigExtension](https://github.com/trq/Gen/blob/master/lib/TwigExtension.php) your extension will automatically gain access to the current directory being processed, the current file being processed, all options that have been passed into *Gen* and all *data* that is currently available.
 
 For information about creating Twig Extensions see http://twig.sensiolabs.org/doc/advanced.html#creating-an-extension
 
 Configuration
-=====
+===
 All directories and files used by *Gen* can be easily configured by placing a *gen.conf.php* file into the root of the *source* directory and having it return an array of the options you wish to overwrite. By default, this array looks like:
 ```
 $ops = [
@@ -91,7 +91,7 @@ $ops = [
 Where *$src* is either passed into *Gen* or uses the current working directory as default and *$dest* is either passed into *Gen* or uses *$src/build* by default.
 
 Using the command line helper
-=====
+===
 *Gen* comes with a very simple command line utility used to process your site. It has available the following options:
 ```
 -s <source>
