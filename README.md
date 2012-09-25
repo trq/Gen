@@ -7,10 +7,10 @@ I developed this *very* *very* simple static site generator specifically for gen
 By default Gen expects to find the following structure within the source directory:
 
 ```
-├── assets          - All contents are recursively copied into the destination directory. *(Optional)*
-├── content         - .twig files within here will be processed and the directories and .html pages produced will be copied into the destination directory.
-├── extensions      - Twig extensions. Any extension in here is autoloaded before templates are processed. *(Optional)*
-└── templates       - Contains reusable .twig template partials.
+├── assets     - All contents are recursively copied into the destination directory. *(Optional)*
+├── content    - .twig files processed, directories and .html pages produced copied into the destination.
+├── extensions - Twig extensions. Any extension here is autoloaded as templates are processed. *(Optional)*
+└── templates  - Contains reusable .twig template partials.
 ```
 An Example
 ===
