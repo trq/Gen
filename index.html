@@ -28,65 +28,116 @@
 
     <div class="container">
       <section id="main_content">
-        <h1>Gen</h1>
+<h1>
+<a name="gen" class="anchor" href="#gen"><span class="mini-icon mini-icon-link"></span></a>Gen</h1>
 
-<p>A <em>very</em> <em>very</em> simple static site generator using Twig.</p>
+<p>A <em>very</em> <em>very</em> simple static site generator using the Twig template engine.</p>
 
 <p>I developed this <em>very</em> <em>very</em> simple static site generator specifically for generating the <a href="http://proemframework.org">http://proemframework.org</a> web site. It is indeed, <em>very</em> <em>very</em> simple.</p>
 
-<p>It expects to find the following structure within the source directory:</p>
+<p>By default Gen expects to find the following structure within the source directory:</p>
 
-<pre><code>├── assets
-├── content
-└── templates
+<pre><code>├── assets          - All contents are recursively copied into the destination directory. *(Optional)*
+├── content         - .twig files within here will be processed and the directories and .html pages produced will be copied into the destination directory.
+├── extensions      - Twig extensions. Any extension in here is autoloaded before templates are processed. *(Optional)*
+└── templates       - Contains reusable .twig template partials.
 </code></pre>
 
-<p>The <em>assets</em> directory is optional, but if found, it's contents will be copied into the destination directory.</p>
-
-<p>The <em>templates</em> directory should contain your reusable template partials, while, the <em>content</em> directory contains your site structure and actual pages.</p>
-
-<p>The contents of the <em>content</em> directory will be processed and the directories and pages within will be copied into your destination.</p>
-
-<p>eg;</p>
+<h1>
+<a name="an-example" class="anchor" href="#an-example"><span class="mini-icon mini-icon-link"></span></a>An Example</h1>
 
 <pre><code>├── assets
-│   ├── css
-│   │   ├── bootstrap-responsive.css
-│   ├── js
-│   │   ├── bootstrap.min.js
-│   └── media
-│       └── img
-│           ├── banner-bg.png
+│&nbsp;&nbsp; ├── css
+│&nbsp;&nbsp; │&nbsp;&nbsp; ├── bootstrap-responsive.css
+│&nbsp;&nbsp; ├── js
+│&nbsp;&nbsp; │&nbsp;&nbsp; ├── bootstrap.min.js
+│&nbsp;&nbsp; └── media
+│&nbsp;&nbsp;     └── img
+│&nbsp;&nbsp;         ├── banner-bg.png
 ├── content
-│   ├── about.twig
-│   ├── docs
-│   │   ├── current
-│   │   │   ├── index.twig
-│   └── index.twig
+│&nbsp;&nbsp; ├── about.twig
+│&nbsp;&nbsp; ├── docs
+│&nbsp;&nbsp; │&nbsp;&nbsp; ├── current
+│&nbsp;&nbsp; │&nbsp;&nbsp; │&nbsp;&nbsp; ├── index.twig
+│&nbsp;&nbsp; └── index.twig
 └── templates
     ├── layout.twig
 </code></pre>
 
-<p>will result in:</p>
+<p><strong>Results in</strong>:</p>
 
 <pre><code>├── about.html
 ├── assets
-│   ├── css
-│   │   ├── bootstrap-responsive.css
-│   ├── js
-│   │   ├── bootstrap.min.js
-│   └── media
-│       └── img
-│           ├── banner-bg.png
+│&nbsp;&nbsp; ├── css
+│&nbsp;&nbsp; │&nbsp;&nbsp; ├── bootstrap-responsive.css
+│&nbsp;&nbsp; ├── js
+│&nbsp;&nbsp; │&nbsp;&nbsp; ├── bootstrap.min.js
+│&nbsp;&nbsp; └── media
+│&nbsp;&nbsp;     └── img
+│&nbsp;&nbsp;         ├── banner-bg.png
 ├── docs
-│   ├── current
-│   │   ├── index.html
+│&nbsp;&nbsp; ├── current
+│&nbsp;&nbsp; │&nbsp;&nbsp; ├── index.html
 └── index.html
 </code></pre>
 
-<p>You can also inject variabes into your content by using php pages. Gen searches for a global.php file within the root of your source directory, a local.php file within the content directory or any of it's sub directories. Gen will finally search for a php file named the same as your twig file.Any of these php files can return an array of data which will then be made available within your templates.</p>
+<h1>
+<a name="injecting-data" class="anchor" href="#injecting-data"><span class="mini-icon mini-icon-link"></span></a>Injecting Data</h1>
 
-<p>If you need to add extensions to twig, you can do so by defining a extension_loader.php file within the root of your source directory. This file gets access to the Twig_Environment object in a variable named $twig.</p>
+<p>Data (variables, arrays, objects) can be injected into templates at certain levels.</p>
+
+<p>Data is injected by simply creating a .php file that returns the data you want in an array.</p>
+
+<pre><code>&lt;?php
+  return ['somevar' =&gt; 'some value'];
+</code></pre>
+
+<p>Firstly, you can create a <em>global.php</em> file and drop it into the root of the <em>source</em> directory. This data will be available to all templates unless overwritten further down.</p>
+
+<p>Secondly, you can create a <em>local.php</em> file within any sub directory. The data this file provides will be merged with the <em>global.php</em> file above (overwriting any duplicate keys).</p>
+
+<p>Lastly, you can create a .php file with the same name as your .twig file. The data returned by this file will again be merged into the data provided above, and the results will be made available only within the .twig file of the same name.</p>
+
+<h1>
+<a name="twig-extensions" class="anchor" href="#twig-extensions"><span class="mini-icon mini-icon-link"></span></a>Twig Extensions</h1>
+
+<p>To use a custom Twig extension simply create a class extending the <a href="https://github.com/trq/Gen/blob/master/lib/TwigExtension.php">Gen\TwigExtension</a> within the <em>Gen</em> namespace and drop it's file into the <em>extensions</em> directory and extend the Gen\TwigExtension class.</p>
+
+<p>By extending the <a href="https://github.com/trq/Gen/blob/master/lib/TwigExtension.php">Gen\TwigExtension</a></p>
+
+<p>For information about creating Twig Extensions see <a href="http://twig.sensiolabs.org/doc/advanced.html#creating-an-extension">http://twig.sensiolabs.org/doc/advanced.html#creating-an-extension</a></p>
+
+<h1>
+<a name="configuration" class="anchor" href="#configuration"><span class="mini-icon mini-icon-link"></span></a>Configuration</h1>
+
+<p>All directories and files used by <em>Gen</em> can be easily configured by placing a <em>gen.conf.php</em> file into the root of the <em>source</em> directory and having it return an array of the options you wish to overwrite. By default, this array looks like:</p>
+
+<pre><code>$ops = [
+    'extensions'    =&gt; 'extensions',
+    'content'       =&gt; 'content',
+    'templates'     =&gt; 'templates',
+    'assets'        =&gt; ['assets'],
+    'global'        =&gt; 'global.php',
+    'local'         =&gt; 'local.php',
+    'src'           =&gt; $src,
+    'dest'          =&gt; $dest
+];
+</code></pre>
+
+<p>Where <em>$src</em> is either passed into <em>Gen</em> or uses the current working directory as default and <em>$dest</em> is either passed into <em>Gen</em> or uses <em>$src/build</em> by default.</p>
+
+<h1>
+<a name="using-the-command-line-helper" class="anchor" href="#using-the-command-line-helper"><span class="mini-icon mini-icon-link"></span></a>Using the command line helper</h1>
+
+<p><em>Gen</em> comes with a very simple command line utility used to process your site. It has available the following options:</p>
+
+<pre><code>-s &lt;source&gt;
+-d &lt;destination&gt;
+-v verbose output
+-h help
+</code></pre>
+
+<p>All of these options are optional. If no <em>source</em> directory is provided the current working directory will be used.</p>
       </section>
     </div>
 
