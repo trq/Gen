@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-require dirname(__FILE__) . '/../autoload.php';
+require dirname(__FILE__) . '/../../../../autoload.php';
 
 $opt            = getopt("hvsd");
 $src            = isset($opt['s']) ? $opt['s'] : getcwd();
