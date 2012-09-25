@@ -90,7 +90,7 @@ class Gen {
         ];
 
         if (file_exists($ops['src'] . '/gen.conf.php')) {
-            $ops = array_merge((array) include $opt['src'] . '/gen.conf.php', $ops);
+            $ops = array_merge($ops, (array) include $ops['src'] . '/gen.conf.php');
         }
 
         if (file_exists($ops['src'] . '/' . $ops['global'])) {
