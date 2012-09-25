@@ -99,14 +99,6 @@ class Gen {
             $data = [];
         }
 
-        if (file_exists(realpath(__DIR__) . '/../../../autoload.php')) {
-            require_once realpath(__DIR__) . '/../../../autoload.php';
-        } else if (file_exists(realpath(__DIR__) . '/../vendor/autoload.php')) {
-            require_once realpath(__DIR__) . '/../vendor/autoload.php';
-        } else {
-            throw new \RuntimeException('composer autoloader not found - unabled to load dependencies.');
-        }
-
         if (!is_dir($ops['dest'])) {
             $this->log("Creating: {$ops['dest']}");
             mkdir($ops['dest']);
