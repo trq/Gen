@@ -67,7 +67,7 @@ class Gen {
     }
 
     public function replaceExtension($filename, $extension) {
-        return preg_replace('/\..+$/', '.' . $extension, $filename);
+        return pathinfo($filename)['filename'] . '.' . $extension;
     }
 
     public function build($src, $dest = null) {
