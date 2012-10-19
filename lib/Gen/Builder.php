@@ -4,70 +4,11 @@ namespace Gen;
 
 class Builder {
 
-    protected $verbose;
+    protected $util;
 
-    public function __construct($verbose = false)
+    public function __construct(Util $util)
     {
-        $this->verbose = $verbose;
-    }
-
-    protected function log($msg)
-    {
-        if ($this->verbose) {
-            echo "$msg\n";
-        }
-    }
-
-    public function cp( $source, $destination )
-    {
-        if (is_dir($source)) {
-            @mkdir($destination);
-            $directory = dir( $source );
-            while (false !== ($readdirectory = $directory->read())) {
-                if ($readdirectory == '.' || $readdirectory == '..') {
-                    continue;
-                }
-                $pathDir = $source . '/' . $readdirectory;
-                if (is_dir($pathDir)) {
-                    $this->cp($pathDir, $destination . '/' . $readdirectory);
-                    continue;
-                }
-
-                $this->log("Copying: $pathDir => $destination/$readdirectory");
-                copy($pathDir, $destination . '/' . $readdirectory);
-            }
-            $directory->close();
-
-        } else {
-            $this->log("Copying: $source => $destination");
-            copy($source, $destination);
-        }
-    }
-
-    public function scan($path = '', &$name = array())
-    {
-        $path = $path == '' ? dirname(__FILE__) : $path;
-        $lists = scandir($path);
-
-        if (!empty($lists)) {
-            foreach($lists as $file) {
-
-                if (is_dir($path . '/' . $file) && $file != '.' & $file != '..') {
-                    $this->scan($path . '/' . $file, $name);
-                } else {
-                    if ($file != '..' && $file != '.') {
-                        $name[] = ['path' => $path, 'file' => $file];
-                    }
-                }
-            }
-      }
-
-      return $name;
-
-    }
-
-    public function replaceExtension($filename, $extension) {
-        return pathinfo($filename)['filename'] . '.' . $extension;
+        $this->util = $util;
     }
 
     public function build($src, $dest = null) {
@@ -100,17 +41,17 @@ class Builder {
         }
 
         if (!is_dir($ops['dest'])) {
-            $this->log("Creating: {$ops['dest']}");
+            $this->util->log("Creating: {$ops['dest']}");
             mkdir($ops['dest']);
         }
 
         foreach ($ops['assets'] as $assetDir) {
             if (is_dir($ops['src'] . '/' . $assetDir)) {
-                $this->cp($ops['src'] . '/' . $assetDir, $ops['dest'] . '/' . $assetDir);
+                $this->util->cp($ops['src'] . '/' . $assetDir, $ops['dest'] . '/' . $assetDir);
             }
         }
 
-        foreach ($this->scan($ops['src'] . '/' . $ops['content']) as $entry) {
+        foreach ($this->util->scan($ops['src'] . '/' . $ops['content']) as $entry) {
             if (pathinfo($entry['file'], PATHINFO_EXTENSION) == 'twig') {
 
                 $local = $entry['path'] . '/' . $ops['local'];
@@ -119,7 +60,7 @@ class Builder {
                     $data = array_merge($data, (array) include $local);
                 }
 
-                $phpFile = $entry['path'] . '/' . $this->replaceExtension($entry['file'], 'php');
+                $phpFile = $entry['path'] . '/' . $this->util->replaceExtension($entry['file'], 'php');
 
                 if (file_exists($phpFile)) {
                     $data = array_merge($data, (array) include $phpFile);
@@ -140,13 +81,13 @@ class Builder {
                 $template = $twig->loadTemplate($entry['file']);
 
                 $path = str_replace($ops['src'] . '/' . $ops['content'], $ops['dest'], $entry['path']);
-                $file = $this->replaceExtension($entry['file'], 'html');
+                $file = $this->util->replaceExtension($entry['file'], 'html');
 
                 if (!is_dir($path)) {
                     mkdir($path, 0777, true);
                 }
 
-                $this->log("Creating: $path/$file");
+                $this->util->log("Creating: $path/$file");
 
                 file_put_contents($path . '/' . $file, $template->render($data));
             }

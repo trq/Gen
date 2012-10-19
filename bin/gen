@@ -21,6 +21,7 @@ Options:
 ";
 
 } else {
-    $gen = new Gen\Gen($verbose);
+    $util = new Gen\Util($verbose);
+    $gen  = new Gen\Builder($util);
     $gen->build($src, $dest);
 }
