@@ -67,9 +67,9 @@ Lastly, you can create a .php file with the same name as your .twig file. The da
 
 Twig Extensions
 ===
-To use a custom Twig extension simply create a class extending the [Gen\TwigExtension](https://github.com/trq/Gen/blob/master/lib/TwigExtension.php) within the *Gen* namespace and drop it's file into the *extensions* directory and extend the Gen\TwigExtension class.
+To use a custom Twig extension simply create a class extending the [Gen\Twig\ExtensionBase](https://github.com/trq/Gen/blob/master/lib/Twig/ExtensionBase.php) within the *Gen* namespace and drop it's file into the *extensions* directory and extend the Gen\Twig\ExtensionBase class.
 
-By extending the [Gen\TwigExtension](https://github.com/trq/Gen/blob/master/lib/TwigExtension.php) your extension will automatically gain access to the current directory being processed, the current file being processed, all options that have been passed into *Gen* and all *data* that is currently available.
+By extending the [Gen\Twig\ExtensionBase](https://github.com/trq/Gen/blob/master/lib/Twig/ExtensionBase.php) your extension will automatically gain access to the current directory being processed, the current file being processed, all options that have been passed into *Gen* and all *data* that is currently available.
 
 For information about creating Twig Extensions see http://twig.sensiolabs.org/doc/advanced.html#creating-an-extension
 

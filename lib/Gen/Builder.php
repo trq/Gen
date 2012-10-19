@@ -2,7 +2,7 @@
 
 namespace Gen;
 
-class Gen {
+class Builder {
 
     protected $verbose;
 
@@ -129,10 +129,10 @@ class Gen {
                 $twig = new \Twig_Environment($loader);
 
                 if (is_dir($ops['src'] . '/' . $ops['extensions'])) {
-                    require_once 'TwigExtension.php';
+                    require_once 'Twig/ExtensionBase.php';
                     foreach (glob($ops['src'] . '/' . $ops['extensions'] . '/*.php') as $file) {
                         require_once $file;
-                        $extension = 'Gen\\' . basename($file, '.php');
+                        $extension = 'Gen\\Twig\\' . basename($file, '.php');
                         $twig->addExtension(new $extension($entry['path'], $entry['file'], $ops, $data));
                     }
                 }

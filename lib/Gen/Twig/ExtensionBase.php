@@ -1,8 +1,8 @@
 <?php
 
-namespace Gen;
+namespace Gen\Twig;
 
-abstract class TwigExtension extends \Twig_Extension
+abstract class ExtensionBase extends \Twig_Extension
 {
     protected $currentDirectory;
     protected $currentFile;
