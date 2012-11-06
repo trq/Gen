@@ -56,11 +56,11 @@ class Util
                     $this->scan($path . '/' . $file, $extension, $name);
                 } else {
                     if ($extension !== null) {
-                        if (is_file($file) && pathinfo($file)['extension'] == $extension) {
+                        if (is_file($path . '/' . $file) && pathinfo($path . '/' . $file)['extension'] == $extension) {
                             $name[] = ['path' => $path, 'file' => $file];
                         }
                     } else {
-                        if (is_file($file)) {
+                        if (is_file($path . '/' . $file)) {
                             $name[] = ['path' => $path, 'file' => $file];
                         }
                     }
@@ -73,6 +73,6 @@ class Util
     }
 
     public function replaceExtension($filename, $extension) {
-        return pathinfo($filename)['filename'] . '.' . $extension;
+         return pathinfo($filename)['filename'] . '.' . $extension;
     }
 }

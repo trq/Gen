@@ -51,47 +51,43 @@ class Builder {
             }
         }
 
-        foreach ($this->util->scan($ops['src'] . '/' . $ops['content']) as $entry) {
-            if (pathinfo($entry['file'], PATHINFO_EXTENSION) == 'twig') {
+        foreach ($this->util->scan($ops['src'] . '/' . $ops['content'], 'twig') as $entry) {
+            $local = $entry['path'] . '/' . $ops['local'];
 
-                $local = $entry['path'] . '/' . $ops['local'];
-
-                if (file_exists($local)) {
-                    $data = array_merge($data, (array) include $local);
-                }
-
-                $phpFile = $entry['path'] . '/' . $this->util->replaceExtension($entry['file'], 'php');
-
-                if (file_exists($phpFile)) {
-                    $data = array_merge($data, (array) include $phpFile);
-                }
-
-                $loader = new \Twig_Loader_Filesystem([$ops['src'] . '/' . $ops['templates'], $entry['path']]);
-                $twig = new \Twig_Environment($loader);
-
-                if (is_dir($ops['src'] . '/' . $ops['extensions'])) {
-                    require_once 'Twig/ExtensionBase.php';
-                    foreach (glob($ops['src'] . '/' . $ops['extensions'] . '/*.php') as $file) {
-                        require_once $file;
-                        $extension = 'Gen\\Twig\\' . basename($file, '.php');
-                        $twig->addExtension(new $extension($entry['path'], $entry['file'], $ops, $data));
-                    }
-                }
-
-                $template = $twig->loadTemplate($entry['file']);
-
-                $path = str_replace($ops['src'] . '/' . $ops['content'], $ops['dest'], $entry['path']);
-                $file = $this->util->replaceExtension($entry['file'], 'html');
-
-                if (!is_dir($path)) {
-                    mkdir($path, 0777, true);
-                }
-
-                $this->util->log("Creating: $path/$file");
-
-                file_put_contents($path . '/' . $file, $template->render($data));
+            if (file_exists($local)) {
+                $data = array_merge($data, (array) include $local);
             }
-        }
 
+            $phpFile = $entry['path'] . '/' . $this->util->replaceExtension($entry['file'], 'php');
+
+            if (file_exists($phpFile)) {
+                $data = array_merge($data, (array) include $phpFile);
+            }
+
+            $loader = new \Twig_Loader_Filesystem([$ops['src'] . '/' . $ops['templates'], $entry['path']]);
+            $twig = new \Twig_Environment($loader);
+
+            if (is_dir($ops['src'] . '/' . $ops['extensions'])) {
+                require_once 'Twig/ExtensionBase.php';
+                foreach (glob($ops['src'] . '/' . $ops['extensions'] . '/*.php') as $file) {
+                    require_once $file;
+                    $extension = 'Gen\\Twig\\' . basename($file, '.php');
+                    $twig->addExtension(new $extension($entry['path'], $entry['file'], $ops, $data));
+                }
+            }
+
+            $template = $twig->loadTemplate($entry['file']);
+
+            $path = str_replace($ops['src'] . '/' . $ops['content'], $ops['dest'], $entry['path']);
+            $file = $this->util->replaceExtension($entry['file'], 'html');
+
+            if (!is_dir($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            $this->util->log("Creating: $path/$file");
+
+            file_put_contents($path . '/' . $file, $template->render($data));
+        }
     }
 }
