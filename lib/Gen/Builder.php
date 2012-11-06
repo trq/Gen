@@ -5,54 +5,39 @@ namespace Gen;
 class Builder {
 
     protected $util;
+    protected $config;
 
-    public function __construct(Util $util)
+    public function __construct(Config $config, Util $util)
     {
-        $this->util = $util;
+        $this->util   = $util;
+        $this->config = $config;
     }
 
     public function build($src, $dest = null) {
 
         $data = [];
 
-        if ($dest === null) {
-            $dest = $src . '/build';
-        }
+        $this->config->init($src, $dest);
 
-        $ops = [
-            'extensions'    => 'extensions',
-            'content'       => 'content',
-            'templates'     => 'templates',
-            'assets'        => ['assets'],
-            'global'        => 'global.php',
-            'local'         => 'local.php',
-            'src'           => $src,
-            'dest'          => $dest
-        ];
-
-        if (file_exists($ops['src'] . '/gen.conf.php')) {
-            $ops = array_merge($ops, (array) include $ops['src'] . '/gen.conf.php');
-        }
-
-        if (file_exists($ops['src'] . '/' . $ops['global'])) {
-            $data = (array) include $ops['src'] . '/' . $ops['global'];
+        if (file_exists($this->config->get('src') . '/' . $this->config->get('global'))) {
+            $data = (array) include $this->config->get('src') . '/' . $this->config->get('global');
         } else {
             $data = [];
         }
 
-        if (!is_dir($ops['dest'])) {
-            $this->util->log("Creating: {$ops['dest']}");
-            mkdir($ops['dest']);
+        if (!is_dir($this->config->get('dest'))) {
+            $this->util->log("Creating: {$this->config->get('dest')}");
+            mkdir($this->config->get('dest'));
         }
 
-        foreach ($ops['assets'] as $assetDir) {
-            if (is_dir($ops['src'] . '/' . $assetDir)) {
-                $this->util->cp($ops['src'] . '/' . $assetDir, $ops['dest'] . '/' . $assetDir);
+        foreach ($this->config->get('assets') as $assetDir) {
+            if (is_dir($this->config->get('src') . '/' . $assetDir)) {
+                $this->util->cp($this->config->get('src') . '/' . $assetDir, $this->config->get('dest') . '/' . $assetDir);
             }
         }
 
-        foreach ($this->util->scan($ops['src'] . '/' . $ops['content'], 'twig') as $entry) {
-            $local = $entry['path'] . '/' . $ops['local'];
+        foreach ($this->util->scan($this->config->get('src') . '/' . $this->config->get('content'), 'twig') as $entry) {
+            $local = $entry['path'] . '/' . $this->config->get('local');
 
             if (file_exists($local)) {
                 $data = array_merge($data, (array) include $local);
@@ -64,21 +49,21 @@ class Builder {
                 $data = array_merge($data, (array) include $phpFile);
             }
 
-            $loader = new \Twig_Loader_Filesystem([$ops['src'] . '/' . $ops['templates'], $entry['path']]);
+            $loader = new \Twig_Loader_Filesystem([$this->config->get('src') . '/' . $this->config->get('templates'), $entry['path']]);
             $twig = new \Twig_Environment($loader);
 
-            if (is_dir($ops['src'] . '/' . $ops['extensions'])) {
+            if (is_dir($this->config->get('src') . '/' . $this->config->get('extensions'))) {
                 require_once 'Twig/ExtensionBase.php';
-                foreach (glob($ops['src'] . '/' . $ops['extensions'] . '/*.php') as $file) {
+                foreach (glob($this->config->get('src') . '/' . $this->config->get('extensions') . '/*.php') as $file) {
                     require_once $file;
                     $extension = 'Gen\\Twig\\' . basename($file, '.php');
-                    $twig->addExtension(new $extension($entry['path'], $entry['file'], $ops, $data));
+                    $twig->addExtension(new $extension($entry['path'], $entry['file'], $this->config, $data));
                 }
             }
 
             $template = $twig->loadTemplate($entry['file']);
 
-            $path = str_replace($ops['src'] . '/' . $ops['content'], $ops['dest'], $entry['path']);
+            $path = str_replace($this->config->get('src') . '/' . $this->config->get('content'), $this->config->get('dest'), $entry['path']);
             $file = $this->util->replaceExtension($entry['file'], 'html');
 
             if (!is_dir($path)) {
