@@ -18,7 +18,14 @@ class Blog
         foreach ($this->util->scan($dir, 'twig') as $entry) {
             if (!in_array($entry['file'], $skip)) {
                 if (preg_match('#content(.*+)#', $entry['path'], $results)) {
-                    $path = $results[1];
+
+                    $meta = [];
+                    $metaFile = $this->util->replaceExtension($entry['file'], 'meta.php');
+                    if (file_exists($entry['path'] . '/' . $metaFile)) {
+                        $meta = (array) include $entry['path'] . '/' . $metaFile;
+                    }
+
+                    $partUrl = $results[1];
                     $file = $this->util->replaceExtension($entry['file'], 'html');
                     $title = ucfirst(str_replace('-', ' ', $this->util->replaceExtension($file, '')));
 
