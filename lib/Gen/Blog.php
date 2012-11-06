@@ -5,16 +5,15 @@ namespace Gen;
 class Blog
 {
     protected $util;
+    protected $index = [];
 
     public function __construct(Util $util)
     {
-        $this->util = $util;
+        $this->util  = $util;
+        $this->index = ['blogs' => []];
     }
 
-    public function getIndex($dir, $skip = []) {
-
-        $out = ['blogs' => []];
-
+    public function buildIndex($dir, $skip = []) {
         foreach ($this->util->scan($dir, 'twig') as $entry) {
             if (!in_array($entry['file'], $skip)) {
                 if (preg_match('#content(.*+)#', $entry['path'], $results)) {
@@ -27,15 +26,28 @@ class Blog
 
                     $partUrl = $results[1];
                     $file = $this->util->replaceExtension($entry['file'], 'html');
-                    $title = ucfirst(str_replace('-', ' ', $this->util->replaceExtension($file, '')));
 
-                    $out['blogs'][] = [
+                    if (isset($meta['title'])) {
+                        $title = $meta['title'];
+                    } else {
+                        $title = ucfirst(str_replace('-', ' ', $this->util->replaceExtension($file, '')));
+                    }
+
+                    $this->index['blogs'][] = [
                         'title' => $title,
-                        'path' => $path . '/' . $file
+                        'url' => $partUrl . '/' . $file,
+                        'path' => $entry['path'],
+                        'file' => $entry['file'],
+                        'meta' => $meta
                     ];
                 }
             }
         }
-        return $out;
+        return $this;
+    }
+
+    public function getIndex()
+    {
+        return $this->index;
     }
 }
