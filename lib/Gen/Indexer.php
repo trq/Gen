@@ -4,18 +4,23 @@ namespace Gen;
 
 class Indexer
 {
+    protected $name;
     protected $util;
     protected $index = [];
 
-    public function __construct(Util $util)
+    public function __construct($name, Util $util)
     {
+        $this->name  = $name;
         $this->util  = $util;
-        $this->index = ['blogs' => []];
+        $this->index = [$this->name => []];
     }
 
     public function build($dir, $skip = []) {
         foreach ($this->util->scan($dir, 'twig') as $entry) {
             if (!in_array($entry['file'], $skip)) {
+                /**
+                 * TODO: This hard coded *content* must be removed.
+                 */
                 if (preg_match('#content(.*+)#', $entry['path'], $results)) {
 
                     $meta = [];
@@ -33,12 +38,13 @@ class Indexer
                         $title = ucfirst(str_replace('-', ' ', $this->util->replaceExtension($file, '')));
                     }
 
-                    $this->index['blogs'][] = [
-                        'title' => $title,
-                        'url' => $partUrl . '/' . $file,
-                        'path' => $entry['path'],
-                        'file' => $entry['file'],
-                        'meta' => $meta
+                    $this->index[$this->name][] = [
+                        'title'   => $title,
+                        'url'     => $partUrl . '/' . $file,
+                        'path'    => $entry['path'],
+                        'file'    => $entry['file'],
+                        'content' => function() { return file_get_contents($entry['path']); },
+                        'meta'    => $meta
                     ];
                 }
             }
