@@ -18,6 +18,12 @@ class Builder {
         $data = [];
 
         $this->config->init($src, $dest);
+
+        // Make sure any $dest passed to build() takes priority over
+        // anything defined within any config file. Loaded in init().
+        if ($dest !== null) {
+            $this->config->set('dest', $dest);
+        }
         $data = new Data;
         $data->merge($this->config->get('src') . '/' . $this->config->get('global'));
 
