@@ -56,7 +56,7 @@ class Util
                     $this->scan($path . '/' . $file, $extension, $name);
                 } else {
                     if ($extension !== null) {
-                        if (is_file($path . '/' . $file) && pathinfo($path . '/' . $file)['extension'] == $extension) {
+                        if (is_file($path . '/' . $file) && (pathinfo($path . '/' . $file)['extension'] == $extension || $file == 'indexer.php')) {
                             $name[] = ['path' => $path, 'file' => $file];
                         }
                     } else {
