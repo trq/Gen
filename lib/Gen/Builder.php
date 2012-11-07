@@ -18,12 +18,8 @@ class Builder {
         $data = [];
 
         $this->config->init($src, $dest);
-
-        if (file_exists($this->config->get('src') . '/' . $this->config->get('global'))) {
-            $data = (array) include $this->config->get('src') . '/' . $this->config->get('global');
-        } else {
-            $data = [];
-        }
+        $data = new Data;
+        $data->merge($this->config->get('src') . '/' . $this->config->get('global'));
 
         if (!is_dir($this->config->get('dest'))) {
             $this->util->log("Creating: {$this->config->get('dest')}");
@@ -37,17 +33,8 @@ class Builder {
         }
 
         foreach ($this->util->scan($this->config->get('src') . '/' . $this->config->get('content'), 'twig') as $entry) {
-            $local = $entry['path'] . '/' . $this->config->get('local');
-
-            if (file_exists($local)) {
-                $data = array_merge($data, (array) include $local);
-            }
-
-            $phpFile = $entry['path'] . '/' . $this->util->replaceExtension($entry['file'], 'php');
-
-            if (file_exists($phpFile)) {
-                $data = array_merge($data, (array) include $phpFile);
-            }
+            $data->merge($entry['path'] . '/' . $this->config->get('local'));
+            $data->merge($entry['path'] . '/' . $this->util->replaceExtension($entry['file'], 'php'));
 
             $loader = new \Twig_Loader_Filesystem([$this->config->get('src') . '/' . $this->config->get('templates'), $entry['path']]);
             $twig = new \Twig_Environment($loader);
@@ -57,7 +44,7 @@ class Builder {
                 foreach (glob($this->config->get('src') . '/' . $this->config->get('extensions') . '/*.php') as $file) {
                     require_once $file;
                     $extension = 'Gen\\Twig\\' . basename($file, '.php');
-                    $twig->addExtension(new $extension($entry['path'], $entry['file'], $this->config, $data));
+                    $twig->addExtension(new $extension($entry['path'], $entry['file'], $this->config, $data()));
                 }
             }
 
@@ -72,7 +59,7 @@ class Builder {
 
             $this->util->log("Creating: $path/$file");
 
-            file_put_contents($path . '/' . $file, $template->render($data));
+            file_put_contents($path . '/' . $file, $template->render($data()));
         }
     }
 }
