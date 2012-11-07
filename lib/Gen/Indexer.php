@@ -2,7 +2,7 @@
 
 namespace Gen;
 
-class Blog
+class Indexer
 {
     protected $util;
     protected $index = [];
@@ -13,7 +13,7 @@ class Blog
         $this->index = ['blogs' => []];
     }
 
-    public function buildIndex($dir, $skip = []) {
+    public function build($dir, $skip = []) {
         foreach ($this->util->scan($dir, 'twig') as $entry) {
             if (!in_array($entry['file'], $skip)) {
                 if (preg_match('#content(.*+)#', $entry['path'], $results)) {
@@ -46,7 +46,7 @@ class Blog
         return $this;
     }
 
-    public function getIndex()
+    public function get()
     {
         return $this->index;
     }
