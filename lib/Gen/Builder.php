@@ -3,6 +3,7 @@
 namespace Gen;
 
 class Builder {
+    use \Gen\Twig\WorkerTrait;
 
     protected $util;
     protected $config;
@@ -43,9 +44,9 @@ class Builder {
                 $indexer_meta = (array) include $entry['path'] . '/indexer.php';
                 if (isset($indexer_meta['plugin'])) {
                     $plugin  = $indexer_meta['plugin'];
-                    $indexer = new $plugin($this->config, $entry['path'], $indexer_meta);
+                    $indexer = new $plugin($this->util, $this->config, $entry['path'], $indexer_meta);
                     if ($indexer instanceof \Gen\Indexer\IndexerAbstract) {
-                        $indexer->process();
+                        $indexer->build();
                     }
                 }
                 continue;
@@ -54,30 +55,22 @@ class Builder {
             $data->merge($entry['path'] . '/' . $this->config->get('local'));
             $data->merge($entry['path'] . '/' . $this->util->replaceExtension($entry['file'], 'php'));
 
-            $loader = new \Twig_Loader_Filesystem([$this->config->get('src') . '/' . $this->config->get('templates'), $entry['path']]);
-            $twig = new \Twig_Environment($loader);
+            $twig = $this->getTwig(
+                $this->config,
+                $entry['path'],
+                $entry['file'],
+                $data()
+            );
 
-            if (is_dir($this->config->get('src') . '/' . $this->config->get('extensions'))) {
-                require_once 'Twig/ExtensionBase.php';
-                foreach (glob($this->config->get('src') . '/' . $this->config->get('extensions') . '/*.php') as $file) {
-                    require_once $file;
-                    $extension = 'Gen\\Twig\\' . basename($file, '.php');
-                    $twig->addExtension(new $extension($entry['path'], $entry['file'], $this->config, $data()));
-                }
-            }
-
-            $template = $twig->loadTemplate($entry['file']);
-
-            $path = str_replace($this->config->get('src') . '/' . $this->config->get('content'), $this->config->get('dest'), $entry['path']);
-            $file = $this->util->replaceExtension($entry['file'], 'html');
-
-            if (!is_dir($path)) {
-                mkdir($path, 0777, true);
-            }
-
-            $this->util->log("Creating: $path/$file");
-
-            file_put_contents($path . '/' . $file, $template->render($data()));
+            $output = $this->writeHtmlFromTwig(
+                $twig,
+                $this->config,
+                $entry['path'],
+                $entry['file'],
+                $this->util->replaceExtension($entry['file'], 'html'),
+                $data()
+            );
+            $this->util->log("Creating: $output");
         }
     }
 }
