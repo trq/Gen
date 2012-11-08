@@ -39,6 +39,18 @@ class Builder {
         }
 
         foreach ($this->util->scan($this->config->get('src') . '/' . $this->config->get('content'), 'twig') as $entry) {
+            if (file_exists($entry['path'] . '/indexer.php')) {
+                $indexer_meta = (array) include $entry['path'] . '/indexer.php';
+                if (isset($indexer_meta['plugin'])) {
+                    $plugin  = $indexer_meta['plugin'];
+                    $indexer = new $plugin($this->config, $entry['path'], $indexer_meta);
+                    if ($indexer instanceof \Gen\Indexer\IndexerAbstract) {
+                        $indexer->process();
+                    }
+                }
+                continue;
+            }
+
             $data->merge($entry['path'] . '/' . $this->config->get('local'));
             $data->merge($entry['path'] . '/' . $this->util->replaceExtension($entry['file'], 'php'));
 
