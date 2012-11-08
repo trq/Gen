@@ -43,8 +43,10 @@ class Builder {
                 $indexer_meta = (array) include $entry['path'] . '/indexer.php';
                 if (isset($indexer_meta['plugin'])) {
                     $plugin  = $indexer_meta['plugin'];
-                    $indexer = new $plugin($indexer_meta);
-                    $indexer->process();
+                    $indexer = new $plugin($this->config, $entry['path'], $indexer_meta);
+                    if ($indexer instanceof \Gen\Indexer\IndexerAbstract) {
+                        $indexer->process();
+                    }
                 }
                 continue;
             }
