@@ -9,7 +9,7 @@ trait WorkerTrait
         $twig = new \Twig_Environment($loader);
 
         if (is_dir($config->get('src') . '/' . $config->get('extensions'))) {
-            require_once 'Twig/ExtensionBase.php';
+            require_once __DIR__ . '/ExtensionBase.php';
             foreach (glob($config->get('src') . '/' . $config->get('extensions') . '/*.php') as $file) {
                 require_once $file;
                 $extension = '\\Gen\\Twig\\' . basename($file, '.php');
