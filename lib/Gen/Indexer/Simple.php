@@ -4,11 +4,10 @@ namespace Gen\Indexer;
 
 class Simple extends IndexerAbstract
 {
-    public function build() {
+    public function build(array $skip = []) {
         if ($this->validMeta) {
 
-            $indexer = (new \Gen\Indexer($this->meta['data'], new \Gen\Util)
-                )->build($this->path);
+            $indexer = (new \Gen\Indexer($this->meta['data'], new \Gen\Util))->build($this->path, $skip);
 
             $twig = $this->getTwig(
                 $this->config,

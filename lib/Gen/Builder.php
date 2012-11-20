@@ -46,7 +46,7 @@ class Builder {
                     $plugin  = $indexer_meta['plugin'];
                     $indexer = new $plugin($this->util, $this->config, $entry['path'], $indexer_meta);
                     if ($indexer instanceof \Gen\Indexer\IndexerAbstract) {
-                        $indexer->build();
+                        $indexer->build(['indexer.php']);
                     }
                 }
                 continue;
