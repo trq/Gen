@@ -7,7 +7,7 @@ class Simple extends IndexerAbstract
     public function build(array $skip = []) {
         if ($this->validMeta) {
 
-            $indexer = (new \Gen\Indexer($this->meta['data'], new \Gen\Util))->build($this->path, $skip);
+            $indexer = (new \Gen\Indexer($this->meta['data'], new \Gen\Util))->build($this->path, $skip, true);
 
             $twig = $this->getTwig(
                 $this->config,

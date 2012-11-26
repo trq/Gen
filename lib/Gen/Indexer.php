@@ -15,7 +15,7 @@ class Indexer
         $this->index = [$this->name => []];
     }
 
-    public function build($dir, $skip = []) {
+    public function build($dir, $skip = [], $reverse = false) {
         foreach ($this->util->scan($dir, 'twig') as $entry) {
             if (!in_array($entry['file'], $skip)) {
                 /**
@@ -49,10 +49,15 @@ class Indexer
                 }
             }
         }
+
+        if ($reverse) {
+            $this->index[$this->name] = array_reverse($this->index[$this->name]);
+        }
+
         return $this;
     }
 
-    public function get()
+    public function get($reverse = false)
     {
         return $this->index;
     }
