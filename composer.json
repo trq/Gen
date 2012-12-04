@@ -11,7 +11,7 @@
     }
   ],
   "require": {
-    "twig/twig": "1.*"
+    "twig/twig": "1.*",
     "dflydev/markdown": "dev-master"
   },
   "autoload": {
