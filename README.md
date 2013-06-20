@@ -4,6 +4,13 @@ A *very* *very* simple static site generator using the Twig template engine.
 
 I developed this *very* *very* simple static site generator specifically for generating the http://proemframework.org web site. It is indeed, *very* *very* simple.
 
+Installation
+============
+The best way to install Gen is via [Composer](http://getcomposer.org/). The following, will create a composer.json file, install all dependencies and bootstrap a skeleton app.
+```
+composer init --require=trq/gen:master -n && composer install && vendor/bin/gen -i
+```
+
 By default Gen expects to find the following structure within the source directory:
 
 ```
