@@ -22,6 +22,7 @@ Options:
 
 } else {
     $util = new Gen\Util($verbose);
-    $gen  = new Gen\Builder($util);
+    $config = new Gen\Config;
+    $gen  = new Gen\Builder($config, $util);
     $gen->build($src, $dest);
 }
