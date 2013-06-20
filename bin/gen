@@ -3,11 +3,12 @@
 
 require dirname(__FILE__) . '/../../../autoload.php';
 
-$opt            = getopt("hvsd");
+$opt            = getopt("hvsdi");
 $src            = isset($opt['s']) ? $opt['s'] : getcwd();
 $dest           = isset($opt['d']) ? $opt['d'] : null;
 $verbose        = isset($opt['v']) ? true : false;
 $help           = isset($opt['h']) ? true : false;
+$init           = isset($opt['i']) ? true : false;
 
 if ($help) {
     echo "
@@ -17,8 +18,15 @@ Options:
     -s <source>
     -d <destination>
     -v verbose output
+    -i init the base tree structure
     -h this help
 ";
+
+} else if ($init) {
+    @mkdir('assets');
+    @mkdir('contents');
+    @mkdir('extensions');
+    @mkdir('templates');
 
 } else {
     $util = new Gen\Util($verbose);
