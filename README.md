@@ -8,7 +8,7 @@ Installation
 ============
 The best way to install Gen is via [Composer](http://getcomposer.org/). The following, will create a composer.json file, install all dependencies and bootstrap a skeleton app.
 ```
-composer init --require=trq/gen:master -n && composer install && vendor/bin/gen -i
+composer init --require=trq/gen:master --stability=dev -n && composer install && vendor/bin/gen -i
 ```
 
 By default Gen expects to find the following structure within the source directory:
