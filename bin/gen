@@ -27,15 +27,19 @@ Options:
     $config->init($src, $dest);
 
     foreach(['assets', 'content', 'dest', 'extensions', 'templates'] as $loc) {
-
+        
         $dir = $config->get($loc);
         
         if(is_array($dir)) {
             foreach($dir as $directory) {
-                @mkdir($src . '/' . $directory);
+                if(strpos($directory, $src) === false)
+                    $directory = $src . '/' . $directory;
+                @mkdir($directory);
             }
         } else {
-            @mkdir($src . '/' . $dir);
+            if(strpos($dir, $src) === false)
+                $dir = $src . '/' . $dir;
+            @mkdir($dir);
         }
     }
 
