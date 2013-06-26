@@ -104,6 +104,7 @@ Using the command line helper
 -s <source>
 -d <destination>
 -v verbose output
+-i init the base tree structure
 -h help
 ```
 All of these options are optional. If no *source* directory is provided the current working directory will be used.
