@@ -23,10 +23,21 @@ Options:
 ";
 
 } else if ($init) {
-    @mkdir('assets');
-    @mkdir('contents');
-    @mkdir('extensions');
-    @mkdir('templates');
+    $config = new Gen\Config;
+    $config->init($src, $dest);
+
+    foreach(array('assets', 'content', 'extensions', 'templates') as $opt) {
+
+        $dir = $config->get($opt);
+        
+        if(is_array($dir)) {
+            foreach($dir as $directory) {
+                @mkdir($src . '/' . $directory);
+            }
+        } else {
+            @mkdir($src . '/' . $dir);
+        }
+    }
 
 } else {
     $util = new Gen\Util($verbose);
