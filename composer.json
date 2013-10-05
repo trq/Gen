@@ -17,5 +17,10 @@
   "autoload": {
     "psr-0": { "Gen": ["lib/"] }
   },
-  "bin": ["bin/gen"]
+  "bin": ["bin/gen"],
+  "extra": {
+    "branch-alias": {
+      "dev-develop": "0.0.x-dev"
+    }
+  }
 }
