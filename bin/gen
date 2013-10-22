@@ -27,6 +27,7 @@ Options:
     @mkdir('contents');
     @mkdir('extensions');
     @mkdir('templates');
+    @mkdir('cache');
 
 } else {
     $util = new Gen\Util($verbose);
