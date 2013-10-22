@@ -20,7 +20,8 @@ class Config
             'global'        => 'global.php',
             'local'         => 'local.php',
             'src'           => $src,
-            'dest'          => $dest
+            'dest'          => $dest,
+            'cache'         => 'cache'
         ];
 
         if (file_exists($this->ops['src'] . '/gen.conf.php')) {
