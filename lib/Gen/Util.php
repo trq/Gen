@@ -44,7 +44,7 @@ class Util
         }
     }
 
-    public function scan($path = '', $extension = null, &$name = array())
+    public function scan($path = '', $extensions = [], &$name = array())
     {
         $path = $path == '' ? dirname(__FILE__) : $path;
         $lists = scandir($path);
@@ -53,10 +53,10 @@ class Util
             foreach($lists as $file) {
 
                 if (is_dir($path . '/' . $file) && $file != '.' & $file != '..') {
-                    $this->scan($path . '/' . $file, $extension, $name);
+                    $this->scan($path . '/' . $file, $extensions, $name);
                 } else {
-                    if ($extension !== null) {
-                        if (is_file($path . '/' . $file) && (pathinfo($path . '/' . $file)['extension'] == $extension || $file == 'indexer.php')) {
+                    if ($extensions) {
+                        if (is_file($path . '/' . $file) && (in_array(pathinfo($path . '/' . $file)['extension'], $extensions) || $file == 'indexer.php')) {
                             $name[] = ['path' => $path, 'file' => $file];
                         }
                     } else {
