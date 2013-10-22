@@ -39,7 +39,7 @@ class Builder {
             }
         }
 
-        foreach ($this->util->scan($this->config->get('src') . '/' . $this->config->get('content'), 'md') as $entry) {
+        foreach ($this->util->scan($this->config->get('src') . '/' . $this->config->get('content'), ['twig', 'md', 'markdown']) as $entry) {
             if (file_exists($entry['path'] . '/indexer.php')) {
                 $indexer_meta = (array) include $entry['path'] . '/indexer.php';
                 if (isset($indexer_meta['plugin'])) {

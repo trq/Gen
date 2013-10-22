@@ -16,7 +16,7 @@ class Indexer
     }
 
     public function build($dir, $skip = [], $reverse = false) {
-        foreach ($this->util->scan($dir, 'twig') as $entry) {
+        foreach ($this->util->scan($dir, ['twig', 'md', 'markdown']) as $entry) {
             if (!in_array($entry['file'], $skip)) {
                 /**
                  * TODO: This hard coded *content* must be removed.
