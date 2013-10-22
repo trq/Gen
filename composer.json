@@ -11,16 +11,11 @@
     }
   ],
   "require": {
-    "php": ">=5.4.0",
-    "twig/twig": "1.*"
+    "twig/twig": "1.*",
+    "daylerees/kurenai": "1.*"
   },
   "autoload": {
     "psr-0": { "Gen": ["lib/"] }
   },
-  "bin": ["bin/gen"],
-  "extra": {
-    "branch-alias": {
-      "dev-develop": "0.0.x-dev"
-    }
-  }
+  "bin": ["bin/gen"]
 }

@@ -26,10 +26,10 @@ Options:
     $config = new Gen\Config;
     $config->init($src, $dest);
 
-    foreach(['assets', 'content', 'dest', 'extensions', 'templates'] as $loc) {
-        
+    foreach(['assets', 'content', 'dest', 'extensions', 'templates', 'cache'] as $loc) {
+
         $dir = $config->get($loc);
-        
+
         if(is_array($dir)) {
             foreach($dir as $directory) {
                 if(strpos($directory, $src) === false)

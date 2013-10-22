@@ -39,7 +39,7 @@ class Builder {
             }
         }
 
-        foreach ($this->util->scan($this->config->get('src') . '/' . $this->config->get('content'), 'twig') as $entry) {
+        foreach ($this->util->scan($this->config->get('src') . '/' . $this->config->get('content'), 'md') as $entry) {
             if (file_exists($entry['path'] . '/indexer.php')) {
                 $indexer_meta = (array) include $entry['path'] . '/indexer.php';
                 if (isset($indexer_meta['plugin'])) {
@@ -62,11 +62,17 @@ class Builder {
                 $data()
             );
 
+            if (in_array(pathinfo($entry['path'] . '/' . $entry['file'])['extension'], ['md', 'markdown'])) {
+                $template = $this->parseMarkdown($this->config, $entry['path'] . '/' . $entry['file'])['template'];
+            } else {
+                $template = $entry['file'];
+            }
+
             $output = $this->writeHtmlFromTwig(
                 $twig,
                 $this->config,
                 $entry['path'],
-                $entry['file'],
+                $template,
                 $this->util->replaceExtension($entry['file'], 'html'),
                 $data()
             );
